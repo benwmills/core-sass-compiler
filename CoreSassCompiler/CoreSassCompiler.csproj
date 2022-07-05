@@ -9,6 +9,8 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Description>ASP.NET Core Sass Compiler with custom Razor tag</Description>
     <Authors>Ben Mills</Authors>
+    <PackageProjectUrl>https://github.com/benwmills/core-sass-compiler</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/benwmills/core-sass-compiler</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,6 +19,10 @@
     <PackageReference Include="Microsoft.AspNetCore.Razor" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+    <PackageReference Include="NuGet.CommandLine" Version="6.2.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="NUglify" Version="1.20.0" />
   </ItemGroup>
 

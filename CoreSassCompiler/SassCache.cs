@@ -3,14 +3,14 @@
 namespace MillsSoftware.CoreSassCompiler
 {
     // Store a SASS compilation in the cache.  Allows for time expiration and watching for SASS source file changes.
-    public class CustomCache
+    public class SassCache
     {
         private readonly IMemoryCache _cache;
         private readonly SassWatchToken _sassWatchToken;
         private readonly SassCompiler _sassCompiler;
         private const string CacheKey = "MillsSoftware.CoreSassCompiler";
 
-        public CustomCache(IMemoryCache cache, SassWatchToken sassWatchToken, SassCompiler sassCompiler)
+        public SassCache(IMemoryCache cache, SassWatchToken sassWatchToken, SassCompiler sassCompiler)
         {
             _cache = cache;
             _sassWatchToken = sassWatchToken;

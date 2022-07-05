@@ -5,9 +5,9 @@ namespace MillsSoftware.CoreSassCompiler
     // Tag helper to inject CSS (compiled SASS) into a Razor view.  Adds a browser cache busting hash based on the compilation.
     public class SassTagHelper : TagHelper
     {
-        private readonly CustomCache _Cache;
+        private readonly SassCache _Cache;
 
-        public SassTagHelper(CustomCache cache)
+        public SassTagHelper(SassCache cache)
         {
             _Cache = cache;
         }

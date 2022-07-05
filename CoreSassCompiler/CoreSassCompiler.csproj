@@ -11,6 +11,7 @@
     <Authors>Ben Mills</Authors>
     <PackageProjectUrl>https://github.com/benwmills/core-sass-compiler</PackageProjectUrl>
     <RepositoryUrl>https://github.com/benwmills/core-sass-compiler</RepositoryUrl>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>

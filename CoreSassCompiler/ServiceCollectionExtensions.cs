@@ -9,7 +9,7 @@ namespace MillsSoftware.CoreSassCompiler
         public static void CoreSassCompiler(this IServiceCollection services, IChangeToken? changeToken = null)
         {
             services.AddSingleton<SassCompilation>();
-            services.AddSingleton<CustomCache>();
+            services.AddSingleton<SassCache>();
             services.AddSingleton<SassWatchToken>(new SassWatchToken() { ChangeToken = changeToken});
         }
     }

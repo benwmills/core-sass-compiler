@@ -4,6 +4,7 @@ using NUglify;
 using NUglify.Css;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace MillsSoftware.CoreSassCompiler
 {
@@ -11,13 +12,42 @@ namespace MillsSoftware.CoreSassCompiler
     public class SassCompiler
     {
         private readonly ILogger<SassCompiler> _logger;
+        private readonly IMemoryCache _cache;
+        private readonly List<SassProfile> _profiles;
 
-        public SassCompiler(ILogger<SassCompiler> logger)
+        public SassCompiler(ILogger<SassCompiler> logger, IMemoryCache cache, List<SassProfile> profiles)
         {
             _logger = logger;
+            _cache = cache;
+            _profiles = profiles;
         }
 
-        public SassCompilation Compile(string inputPath, string outputPath, bool minify)
+        public SassCompilation? GetCompilation(string profileName)
+        {
+            var profile = this._profiles.FirstOrDefault(x => x.Name == profileName);
+            if (profile == null || string.IsNullOrWhiteSpace(profile.InputFile)) return null;
+
+            string cacheKey = $"MillsSoftware.CoreSassCompiler.{profile.Name}";
+
+            return _cache.GetOrCreate<SassCompilation>(cacheKey, entry =>
+            {
+                // Cache entry for defined number of minutes.
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(profile.CacheMinutes);
+
+                // Watch for changes in the SASS files.
+                if (profile.ChangeToken != null)
+                {
+                    entry.ExpirationTokens.Add(profile.ChangeToken);
+                }
+
+                var sassCompilation = this.Compile(profile.InputFile, profile.Minify);
+                sassCompilation.Url = profile.Url;
+
+                return sassCompilation;
+            });
+        }
+
+        private SassCompilation Compile(string inputPath, bool minify)
         {
             var result = new SassCompilation();
 
@@ -25,7 +55,7 @@ namespace MillsSoftware.CoreSassCompiler
             {
                 // Compile using LibSass.
                 var options = new CompilationOptions();
-                CompilationResult libSass = LibSassHost.SassCompiler.CompileFile(inputPath, outputPath, options: options);
+                CompilationResult libSass = LibSassHost.SassCompiler.CompileFile(inputPath, options: options);
 
                 // Minify the result.
                 if (minify)
@@ -35,7 +65,8 @@ namespace MillsSoftware.CoreSassCompiler
 
                     if (minifiedResult.HasErrors)
                     {
-                        _logger.LogError(string.Join(",", minifiedResult.Errors.Select(x => x.Message)));
+                        result.MinifierErrors = string.Join(",", minifiedResult.Errors.Select(x => x.Message));
+                        _logger.LogError(result.MinifierErrors);
                     }
 
                     result.SassResult = minifiedResult.Code;
@@ -53,13 +84,14 @@ namespace MillsSoftware.CoreSassCompiler
 
                 result.Hash = hashString;
 
+                // Indicate success.
                 result.IsSuccess = true;
             }
             catch (SassCompilationException e)
             {
-                string error = LibSassHost.Helpers.SassErrorHelpers.GenerateErrorDetails(e);
-                _logger.LogError(error);
-                throw new ApplicationException(error, e);
+                result.IsSuccess = false;
+                result.SassErrors = LibSassHost.Helpers.SassErrorHelpers.GenerateErrorDetails(e);
+                _logger.LogError(result.SassErrors);
             }
 
             return result;

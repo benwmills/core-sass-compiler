@@ -6,11 +6,16 @@ namespace MillsSoftware.CoreSassCompiler
     public static class ServiceCollectionExtensions
     {
         // Sets up dependency injection for the library.
-        public static void CoreSassCompiler(this IServiceCollection services, IChangeToken? changeToken = null)
+        public static void AddCoreSassCompiler(this IServiceCollection services, List<SassProfile> profiles)
         {
-            services.AddSingleton<SassCompilation>();
-            services.AddSingleton<SassCache>();
-            services.AddSingleton<SassWatchToken>(new SassWatchToken() { ChangeToken = changeToken});
+            services.AddSingleton<SassCompiler>();
+            services.AddSingleton(profiles);
+        }
+
+        public static void AddCoreSassCompiler(this IServiceCollection services, SassProfile profile)
+        {
+            services.AddSingleton<SassCompiler>();
+            services.AddSingleton(new List<SassProfile>() { profile });
         }
     }
 }

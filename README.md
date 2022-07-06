@@ -32,19 +32,19 @@ This sets up a profile that defines what SASS should be compiled (using LibSassH
 3. Link to the compiled SASS via a tag helper (here added in the _Layout.cshtml):
 
 ```
-    <sass name="main-css" />
+<sass name="main-css" />
 ```
 
 Note that this won't work until you add the following directive to `_ViewImports.cshtml` that allows your views to use the new tag helper:
 
 ```
-    @addTagHelper *, MillsSoftware.CoreSassCompiler
+@addTagHelper *, MillsSoftware.CoreSassCompiler
 ```
 
 The end result in your rendered layout is a standard link tag with a hash based on the file content:
 
 ```
-    <link rel="stylesheet" href="/css/main?UeBVvswRn5/Iod8IXrQ61A==" />
+<link rel="stylesheet" href="/css/main?UeBVvswRn5/Iod8IXrQ61A==" />
 ```
 
 4. Add a controller to render the CSS:
@@ -73,7 +73,7 @@ namespace MySite.Controllers
             var compilation = _compiler.GetCompilation("main-css");
             if (compilation == null) return NotFound();
 
-            if (!compilation.IsSuccess  && _environment.IsDevelopment())
+            if (!compilation.IsSuccess && _environment.IsDevelopment())
             {
                 return Content($"{compilation.SassErrors} {compilation.MinifierErrors}");
             }

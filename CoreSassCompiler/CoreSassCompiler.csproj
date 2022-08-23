@@ -11,8 +11,18 @@
     <Authors>Ben Mills</Authors>
     <PackageProjectUrl>https://github.com/benwmills/core-sass-compiler</PackageProjectUrl>
     <RepositoryUrl>https://github.com/benwmills/core-sass-compiler</RepositoryUrl>
-    <Version>1.0.10</Version>
+    <Version>1.0.11</Version>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <Copyright>Mills Software</Copyright>
+    <PackageTags>sass</PackageTags>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="LibSassHost" Version="1.3.3" />
